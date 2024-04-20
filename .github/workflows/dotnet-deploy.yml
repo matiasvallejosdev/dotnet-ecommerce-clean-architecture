@@ -1,7 +1,7 @@
 # This workflow will build, test, and deploy a .NET project to AWS Elastic Beanstalk.
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-dotnet
 
-name: .NET Core Deploy to Beanstalk AWS
+name: .NET Core Deploy to AWS Elastic Beanstalk
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Ensure this version matches your project's target framework
+        dotnet-version: '8.0.x' # Make sure this version matches your project settings
         
     - name: Cache NuGet Packages
       uses: actions/cache@v3
@@ -64,9 +64,3 @@ jobs:
     - name: Cleanup Artifacts
       if: always()
       run: rm -rf ${{ github.workspace }}/publish ${{ github.workspace }}/deploy-package.zip
-
-    - name: Notify Deployment Status
-      if: failure()
-      uses: some-notification-action@v1
-      with:
-        message: 'Deployment to AWS Elastic Beanstalk failed. Check the logs for details.'
