@@ -2,11 +2,11 @@ namespace App.Contracts;
 
 public class ProductGetDto
 {
-    public required int Id { get; set; }
-    public required string Code { get; set; }
-    public required string Name { get; set; }
-    public required int Stock { get; set; }
-    public required decimal Price { get; set; }
-    public required string BrandName { get; set; }
-    public required string FamilyName { get; set; }
+    public int Id { get; set; } 
+    public string Code { get; set; } = default!;
+    public string Name { get; set; } = default!;
+    public int Stock { get; set; } = default!;
+    public decimal Price { get; set; } = default!;
+    public string BrandName { get; set; } = default!;
+    public string FamilyName { get; set; } = default!;
 }

@@ -6,9 +6,9 @@ using System.Collections.Generic;
 public class Product : Base
 {
     public int Id { get; set; }
-    public required string Code { get; set; }
-    public required string Name { get; set; }
-    public required string Description { get; set; }
+    public string Code { get; set; } = default!;
+    public string Name { get; set; } = default!;
+    public string Description { get; set; } = default!;
     [Column(TypeName = "decimal(18, 2)")]
     public decimal PriceCost { get; set; } = 0;
 

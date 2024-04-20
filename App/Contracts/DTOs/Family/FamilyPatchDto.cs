@@ -2,5 +2,5 @@ namespace App.Contracts;
 
 public class FamilyPatchDto
 {
-    public required string Name { get; set; }
+    public string Name { get; set; } = default!;
 }

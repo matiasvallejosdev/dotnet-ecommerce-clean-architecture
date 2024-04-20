@@ -2,5 +2,5 @@ namespace App.Contracts;
 
 public class FamilyPostDto
 {
-    public required string Name { get; set; }
+    public string Name { get; set; } = default!;
 }

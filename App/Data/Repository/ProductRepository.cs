@@ -6,7 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using App.Contracts;
 using App.Data;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 public class ProductRepository : IProductRepository

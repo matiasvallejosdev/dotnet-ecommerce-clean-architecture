@@ -50,7 +50,7 @@ public class ProductController : ControllerBase
      [FromQuery] int brandId = 0,
      [FromQuery] int familyId = 0,
      [FromQuery] string? status = "",
-     [FromQuery] string details = "normal")
+     [FromQuery] string? details = "normal")
     {
         try
         {

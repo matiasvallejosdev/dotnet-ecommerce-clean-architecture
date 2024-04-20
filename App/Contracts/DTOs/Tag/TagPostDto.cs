@@ -1,6 +1,6 @@
 namespace App.Contracts;
 
-    public class TagPostDto
-    {
-        public required string Name { get; set; }
-    }
+public class TagPostDto
+{
+    public string Name { get; set; } = default!;
+}

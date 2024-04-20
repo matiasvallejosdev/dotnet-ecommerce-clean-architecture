@@ -2,6 +2,6 @@ namespace App.Contracts;
 
 public class TagGetDto
 {
-    public required int Id { get; set; }
-    public required string Name { get; set; }
+    public int Id { get; set; } = default!;
+    public string Name { get; set; } = default!;
 }
