@@ -41,6 +41,7 @@ jobs:
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         application_name: simpleecommerceintreviewapi
         environment_name: simpleecommerceintreviewapi-dev
-        version_label: 0.1
+        version_label: ${{ github.run_id }}
+        version_description: ${{ github.sha }}
         region: us-east-2
         deployment_package: deploy.zip
