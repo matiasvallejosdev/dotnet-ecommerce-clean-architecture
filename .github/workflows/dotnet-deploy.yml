@@ -39,8 +39,8 @@ jobs:
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: simpleecommerceapi
-        environment_name: simpleecommerceapi-dev
+        application_name: simpleecommerceintreviewapi
+        environment_name: simpleecommerceintreviewapi-dev
         version_label: 0.1
         region: us-west-2
         deployment_package: deploy.zip
