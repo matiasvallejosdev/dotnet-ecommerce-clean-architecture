@@ -36,7 +36,7 @@ jobs:
       run: dotnet build --no-restore -c Release
       
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --configuration Release --verbosity normal
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/publish'
