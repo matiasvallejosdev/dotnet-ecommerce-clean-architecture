@@ -42,5 +42,5 @@ jobs:
         application_name: simpleecommerceintreviewapi
         environment_name: simpleecommerceintreviewapi-dev
         version_label: 0.1
-        region: us-west-2
+        region: us-east-2
         deployment_package: deploy.zip
