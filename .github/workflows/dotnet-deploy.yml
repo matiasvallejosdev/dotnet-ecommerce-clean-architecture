@@ -49,7 +49,7 @@ jobs:
     - name: Verify Package Contents
       run: unzip -l ${{ github.workspace }}/deploy-package.zip
 
-    - name: Deploy to Elastic Beanstalk
+    - name: Deploy to EB
       uses: einaregilsson/beanstalk-deploy@v22
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -57,10 +57,11 @@ jobs:
         application_name: simpleecommerceintreviewapi
         environment_name: simpleecommerceintreviewapi-dev
         version_label: ${{ github.run_id }}
-        version_description: "Deployment: ${{ github.sha }}"
+        version_description: ${{ github.sha }}
         region: us-east-2
         deployment_package: ${{ github.workspace }}/deploy-package.zip
-      
+        recovery_wait_time: 120 # Increased from 30 to 120 seconds
+          
     - name: Cleanup Artifacts
       if: always()
       run: rm -rf ${{ github.workspace }}/publish ${{ github.workspace }}/deploy-package.zip
