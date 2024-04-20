@@ -36,7 +36,7 @@ public class FamilyController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetFamiliesList([FromQuery] string details = "")
+    public async Task<IActionResult> GetFamiliesList([FromQuery] string? details = "")
     {
         try
         {

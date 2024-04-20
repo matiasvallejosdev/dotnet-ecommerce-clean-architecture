@@ -36,7 +36,7 @@ public class BrandController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetBrandsList([FromQuery] string details = "")
+    public async Task<IActionResult> GetBrandsList([FromQuery] string? details = "")
     {
         try
         {
