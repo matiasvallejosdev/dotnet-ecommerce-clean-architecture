@@ -12,9 +12,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add DbContext
+string connectionString = builder.Configuration.GetConnectionString("Default");
+if (builder.Environment.IsDevelopment())
+{
+    connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? string.Empty;
+}
 builder.Services.AddDbContext<EntityDataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+    options.UseSqlServer(connectionString);
 });
 
 // Inject services and repositories
