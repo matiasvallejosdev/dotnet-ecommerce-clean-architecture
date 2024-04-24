@@ -2,8 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using App.Data;
 using App.Contracts;
 using App.Services;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Load .env file
+Env.Load();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -12,11 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add DbContext
-string connectionString = builder.Configuration.GetConnectionString("Default");
-if (builder.Environment.IsDevelopment())
-{
-    connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? string.Empty;
-}
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 builder.Services.AddDbContext<EntityDataContext>(options =>
 {
     options.UseSqlServer(connectionString);
