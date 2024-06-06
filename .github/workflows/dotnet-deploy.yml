@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Make sure this version matches your project settings
+        dotnet-version: '6.0.x' # Make sure this version matches your project settings
         
     - name: Cache NuGet Packages
       uses: actions/cache@v3

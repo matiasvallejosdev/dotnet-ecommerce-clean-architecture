@@ -97,7 +97,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProduct(int id, [FromQuery] string type = "")
+    public async Task<IActionResult> DeleteProduct(int id, [FromQuery] string type = "soft")
     {
         try
         {

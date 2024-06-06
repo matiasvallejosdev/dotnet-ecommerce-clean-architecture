@@ -19,7 +19,10 @@ builder.Services.AddSwaggerGen();
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 builder.Services.AddDbContext<EntityDataContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    if (connectionString != null)
+    {
+        options.UseSqlServer(connectionString);
+    }
 });
 
 // Inject services and repositories
