@@ -15,7 +15,7 @@ jobs:
 
     services:
       sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-latest
+        image: mcr.microsoft.com/mssql/server:2019-CU12-ubuntu-20.04
         env:
           SA_PASSWORD: "yourStrong(!)Password"
           ACCEPT_EULA: "Y"
@@ -94,3 +94,4 @@ jobs:
     - name: Cleanup Artifacts
       if: always()
       run: rm -rf ${{ github.workspace }}/publish ${{ github.workspace }}/deploy-package.zip
+
