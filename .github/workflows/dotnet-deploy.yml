@@ -14,19 +14,15 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres:latest
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2019-latest
         env:
-          POSTGRES_DB: test_db
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
+          SA_PASSWORD: "yourStrong(!)Password"
+          ACCEPT_EULA: "Y"
         ports:
-          - 5432:5432
+          - 1433:1433
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "until /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P yourStrong(!)Password -Q 'select 1'; do sleep 1; done"
 
     steps:
     - uses: actions/checkout@v4
@@ -53,18 +49,22 @@ jobs:
     - name: Install EF Core CLI
       run: dotnet tool install --global dotnet-ef
     
-    - name: Wait for PostgreSQL to be ready
-      run: until pg_isready -h localhost -p 5432 -U test_user; do echo waiting for postgres; sleep 2; done
-    
+    - name: Wait for SQL Server to be ready
+      run: |
+        while ! /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P yourStrong(!)Password -Q "select 1" > /dev/null 2>&1; do
+          echo "Waiting for SQL Server to start...";
+          sleep 1;
+        done
+
     - name: Run Migrations
       run: dotnet ef database update --project App/App.csproj
       env:
-        DB_CONNECTION_STRING: "Host=localhost;Port=5432;Username=test_user;Password=test_password;Database=test_db"
+        DB_CONNECTION_STRING: "Server=localhost,1433;Database=test_db;User Id=sa;Password=yourStrong(!)Password"
         
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
       env:
-        DB_CONNECTION_STRING: "Host=localhost;Port=5432;Username=test_user;Password=test_password;Database=test_db"
+        DB_CONNECTION_STRING: "Server=localhost,1433;Database=test_db;User Id=sa;Password=yourStrong(!)Password"
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/publish'
