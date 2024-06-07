@@ -1,7 +1,7 @@
 # Documentación de la Arquitectura en Capas
 
 ## Introducción
-Esta documentación proporciona una visión detallada de la arquitectura en capas utilizada en el proyecto "dotnet-ecommerce-clean-architecture". La arquitectura se divide en cuatro capas principales: Servicios, Contratos, Controladores y Datos. Este enfoque promueve la separación de responsabilidades, mejora la mantenibilidad y facilita las pruebas.
+Esta documentación proporciona una visión detallada de la arquitectura en capas utilizada en el proyecto "dotnet-layered-architecture-ecommerce". La arquitectura se divide en cuatro capas principales: Servicios, Contratos, Controladores y Datos. Este enfoque promueve la separación de responsabilidades, mejora la mantenibilidad y facilita las pruebas.
 
 ## Descripción General de la Arquitectura
 La aplicación está estructurada en los siguientes componentes clave, cada uno con responsabilidades específicas:
