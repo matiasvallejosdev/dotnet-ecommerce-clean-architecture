@@ -1,5 +1,6 @@
 # This workflow will build, test, and deploy a .NET project to AWS Elastic Beanstalk.
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-dotnet
+
 name: .NET Core Deploy to AWS Elastic Beanstalk
 
 on:
@@ -11,6 +12,21 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - uses: actions/checkout@v4
@@ -37,13 +53,18 @@ jobs:
     - name: Install EF Core CLI
       run: dotnet tool install --global dotnet-ef
     
+    - name: Wait for PostgreSQL to be ready
+      run: until pg_isready -h localhost -p 5432 -U test_user; do echo waiting for postgres; sleep 2; done
+    
     - name: Run Migrations
       run: dotnet ef database update --project App/App.csproj
       env:
-        DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+        DB_CONNECTION_STRING: "Host=localhost;Port=5432;Username=test_user;Password=test_password;Database=test_db"
         
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
+      env:
+        DB_CONNECTION_STRING: "Host=localhost;Port=5432;Username=test_user;Password=test_password;Database=test_db"
 
     - name: Publish
       run: dotnet publish -c Release -o '${{ github.workspace }}/publish'
