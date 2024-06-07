@@ -15,14 +15,17 @@ jobs:
 
     services:
       sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-CU12-ubuntu-20.04
+        image: mcr.microsoft.com/mssql/server:2019-latest
         env:
           SA_PASSWORD: "yourStrong(!)Password"
           ACCEPT_EULA: "Y"
         ports:
           - 1433:1433
         options: >-
-          --health-cmd "until /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P yourStrong(!)Password -Q 'select 1'; do sleep 1; done"
+          --health-cmd "curl -f http://localhost:1433 || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
     - uses: actions/checkout@v4
@@ -51,10 +54,12 @@ jobs:
     
     - name: Wait for SQL Server to be ready
       run: |
+        echo "Waiting for SQL Server to start..."
         while ! /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P yourStrong(!)Password -Q "select 1" > /dev/null 2>&1; do
           echo "Waiting for SQL Server to start...";
-          sleep 1;
+          sleep 10;
         done
+        echo "SQL Server is up and running"
 
     - name: Run Migrations
       run: dotnet ef database update --project App/App.csproj
@@ -94,4 +99,3 @@ jobs:
     - name: Cleanup Artifacts
       if: always()
       run: rm -rf ${{ github.workspace }}/publish ${{ github.workspace }}/deploy-package.zip
-
