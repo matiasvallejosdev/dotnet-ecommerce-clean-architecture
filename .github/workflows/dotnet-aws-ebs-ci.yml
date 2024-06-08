@@ -1,0 +1,72 @@
+# This workflow will build, test, and deploy a .NET project to AWS Elastic Beanstalk.
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-dotnet
+
+name: .NET Core Deploy to AWS Elastic Beanstalk
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x' # Make sure this version matches your project settings
+        
+    - name: Cache NuGet Packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore -c Release
+    
+    - name: Install EF Core CLI
+      run: dotnet tool install --global dotnet-ef
+    
+    - name: Run Migrations
+      run: dotnet ef database update --project App/App.csproj
+      env:
+        DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal
+
+    - name: Publish
+      run: dotnet publish -c Release -o '${{ github.workspace }}/publish'
+  
+    - name: Zip Package
+      run: |
+        cd ${{ github.workspace }}/publish 
+        zip -r ../deploy-package.zip *
+      
+    - name: Verify Package Contents
+      run: unzip -l ${{ github.workspace }}/deploy-package.zip
+
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v22
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: testsimpleecommercedotnetapi
+        environment_name: testsimpleecommercedotnetapi-dev
+        version_label: ${{ github.run_id }}
+        version_description: ${{ github.sha }}
+        region: us-east-2
+        deployment_package: ${{ github.workspace }}/deploy-package.zip
+        wait_for_deployment: true
+        wait_for_environment_recovery: 120 # Time in seconds to wait for the environment to recover
+          
+    - name: Cleanup Artifacts
+      if: always()
+      run: rm -rf ${{ github.workspace }}/publish ${{ github.workspace }}/deploy-package.zip
