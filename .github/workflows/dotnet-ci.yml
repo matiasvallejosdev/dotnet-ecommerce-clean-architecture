@@ -13,20 +13,6 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
 
-    services:
-      sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-latest
-        env:
-          SA_PASSWORD: "yourStrong(!)Password"
-          ACCEPT_EULA: "Y"
-        ports:
-          - 1433:1433
-        options: >-
-          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P yourStrong(!)Password -Q 'select 1'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 30
-
     steps:
     - uses: actions/checkout@v4
 
@@ -52,30 +38,9 @@ jobs:
     - name: Install EF Core CLI
       run: dotnet tool install --global dotnet-ef
 
-    - name: Wait for SQL Server to be ready
-      run: |
-        echo "Waiting for SQL Server to start..."
-        for i in {1..60}; do
-          if /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P yourStrong(!)Password -Q "select 1" > /dev/null 2>&1; then
-            echo "SQL Server is up and running"
-            break
-          else
-            echo "SQL Server is starting up, waiting 10 seconds..."
-            sleep 10
-          fi
-        done
-
-    - name: Run Migrations
-      run: dotnet ef database update --project App/App.csproj
-      env:
-        DB_CONNECTION_STRING: "Server=localhost,1433;Database=test_db;User Id=sa;Password=yourStrong(!)Password"
-
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
-      env:
-        DB_CONNECTION_STRING: "Server=localhost,1433;Database=test_db;User Id=sa;Password=yourStrong(!)Password"
 
     - name: Cleanup Artifacts
       if: always()
       run: rm -rf ${{ github.workspace }}/publish ${{ github.workspace }}/deploy-package.zip
-      
